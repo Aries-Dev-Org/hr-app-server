@@ -1,0 +1,39 @@
+#que version vas a usar, es aconsejable la 3, o 3.9:
+version: '3.9'
+    #Nombre del servicio, puede ser cualquiera
+    mongo_db:
+        #si existe le siguiente variable, el contenedor se va a llamar por esta, o por la de arriba ('mongo_db)
+        container_name: db_container
+        # que imagen y version se va a usar
+        image: mongo:latest 
+        # que pasa si se cae 
+        restart: always
+        # desde que puerto de nuestra pc le vamos a pegar a que puerto del contenedor
+        ports: 
+            - "2717:27017" 
+        # donde se va a guardar la informacion en caso de que sea eliminado el contenedor
+        volumes: 
+            - mongo_db: /data/db
+    
+    # nmbre del servicio de node
+    api:
+      # donde esta el Dokerfile desde donde va a buildear el contenedor ( el . es el dir inicial )
+      build: .
+      # desde que puerto de nuestra pc le vamos a pegar a que puerto del contenedor
+      ports: 
+        - 4000:5000
+      # mapeo toda la app local a la app del contenedor para captar las modificaciones y ejecuta el run dev desde Dockerfile
+      volumes:
+        - .:/usr/src/app
+      #variables de entorno:
+      environment: 
+        PORT: 5000
+        #despues del // ponemos el nombre del servicio de mongo que creamos arriba ( puede ser mongo_db o db_container )
+        MONGODB_URI: mongodb://mongo_db:27017
+      #dependencias. si no arranca la dependencia, este servicio no arranca
+      depends_on: 
+        -mongo_db
+
+#creamos los volumenes antes mencionados, y le pasamos un objeto vacio        
+volumes:
+  - mongo_db: {}

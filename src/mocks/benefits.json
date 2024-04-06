@@ -1,0 +1,77 @@
+[
+    {
+        "title": "40% de descuento",
+        "category": "Gold",
+        "company": "Adidas"
+    },
+    {
+        "title": "30% de descuento",
+        "category": "Silver",
+        "company": "Adidas"
+    },
+    {
+        "title": "20% de descuento",
+        "category": "Bronze",
+        "company": "Adidas"
+    },
+    {
+        "title": "40% de descuento",
+        "category": "Gold",
+        "company": "Nike"
+    },
+    {
+        "title": "30% de descuento",
+        "category": "Silver",
+        "company": "Nike"
+    },
+    {
+        "title": "20% de descuento",
+        "category": "Bronze",
+        "company": "Nike"
+    },
+    {
+        "title": "40% de descuento",
+        "category": "Gold",
+        "company": "Puma"
+    },
+    {
+        "title": "30% de descuento",
+        "category": "Silver",
+        "company": "Puma"
+    },
+    {
+        "title": "20% de descuento",
+        "category": "Bronze",
+        "company": "Puma"
+    },
+    {
+        "title": "40% de descuento",
+        "category": "Gold",
+        "company": "Kevingston"
+    },
+    {
+        "title": "30% de descuento",
+        "category": "Silver",
+        "company": "Kevingston"
+    },
+    {
+        "title": "20% de descuento",
+        "category": "Bronze",
+        "company": "Kevingston"
+    },
+    {
+        "title": "40% de descuento",
+        "category": "Gold",
+        "company": "Lenovo"
+    },
+    {
+        "title": "30% de descuento",
+        "category": "Silver",
+        "company": "Lenovo"
+    },
+    {
+        "title": "20% de descuento",
+        "category": "Bronze",
+        "company": "Lenovo"
+    }
+]

@@ -1,0 +1,13 @@
+module.exports.RESET_PASSWORD = 'RESET_PASSWORD';
+module.exports.NEW_RECOGNITION = 'NEW_RECOGNITION';
+module.exports.NEW_EVALUATION = 'NEW_EVALUATION';
+module.exports.ADD_USER_TO_EVALUATION = 'ADD_USER_TO_EVALUATION';
+module.exports.APPLY_TO_POSTULATION = 'APPLY_TO_POSTULATION';
+module.exports.APROVE_POSTULATION = 'APROVE_POSTULATION';
+module.exports.NEW_DEMAND = 'NEW_DEMAND';
+module.exports.DEMAND_MODIFIED = 'DEMAND_MODIFIED';
+module.exports.DEMAND_DONE = 'DEMAND_DONE';
+module.exports.NEW_GOAL = 'NEW_GOAL';
+module.exports.UPDATE_GOAL = 'UPDATE_GOAL';
+module.exports.EVALUATION_RESULT = 'EVALUATION_RESULT';
+module.exports.TEST_EMAIL = 'TEST_EMAIL';

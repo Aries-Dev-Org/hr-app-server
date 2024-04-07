@@ -2,9 +2,9 @@
 require('dotenv').config();
 const http = require('http');
 const app = require('./app');
-const { dbConnect } = require('./services/dbManager');
+// const { dbConnect } = require('./services/dbManager');
+const { connectAllDb } = require('./db/connectionManager');
 const socketBuilder = require('socket.io');
-// const processName = process.env.name || 'primary';
 
 const PORT = process.env.PORT || 3001;
 const ENV = process.env.NODE_ENV;
@@ -28,7 +28,8 @@ app.set('socket', socket);
 
 const startServer = async () => {
   try {
-    await dbConnect();
+    // await dbConnect(); // Conexión a una única base
+    await connectAllDb(); // Conexión a múltiples bases
 
     server.listen(PORT, () => {
       console.info(`Server running in ${ENV} mode on port: ${PORT}`);

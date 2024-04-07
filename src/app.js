@@ -36,6 +36,8 @@ const reminderRoutes = require('./routes/reminderRoutes.js');
 const congratulationRoutes = require('./routes/congratulationRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const excelRoutes = require('./routes/excelRoutes.js');
+const adminRoutes = require('./routes/adminRoutes.js');
+const { setAdminDb } = require('./middlewares/connectionResolver.js');
 
 /* const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -64,6 +66,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use('/api/user-public', userPublicRoutes);
 
 // Private routes
+app.use('/api/admin', verifyToken, setAdminDb, adminRoutes);
 app.use('/api/area', verifyToken, areaRoutes);
 app.use('/api/benefit', verifyToken, benefitRoutes);
 app.use('/api/company', verifyToken, companyRoutes);

@@ -19,6 +19,7 @@
     "aws-sdk": "^2.1428.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.0.1",
+    "continuation-local-storage": "^3.2.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "exceljs": "^4.3.0",

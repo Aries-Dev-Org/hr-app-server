@@ -2,7 +2,7 @@ const { emitSocketEvent } = require('../helpers/emitSocketEvent');
 const Reminder = require('../models/Reminder');
 
 module.exports.getReminders = async () => {
-  return await Reminder.find({}).sort({ date: 1 });
+  return await Reminder.find({}).sort({ date: 'asc' });
 };
 
 module.exports.createReminder = async (req, data) => {

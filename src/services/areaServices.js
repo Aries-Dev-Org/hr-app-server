@@ -241,7 +241,7 @@ module.exports.updateArea = async (req) => {
       path: 'parentArea',
       select: 'name bosses',
     })
-    .sort({ name: 1 });
+    .sort({ name: 'asc' });
 };
 
 //Eliminar un area

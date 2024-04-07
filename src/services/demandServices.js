@@ -13,7 +13,7 @@ module.exports.getDemands = async (userId) => {
   })
     .populate({ path: 'toUserId', select: 'name lastname email avatar' })
     .populate({ path: 'createUserId', select: 'name lastname email avatar' })
-    .sort({ priority: -1 });
+    .sort({ priority: 'desc' });
 };
 
 module.exports.createDemand = async (req, data) => {

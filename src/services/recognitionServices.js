@@ -19,7 +19,7 @@ module.exports.getRanking = async () => {
       },
     },
   ])
-    .sort({ numberOfRecognitions: -1 })
+    .sort({ numberOfRecognitions: 'desc' })
     .limit(10);
 
   return ranking;
@@ -27,7 +27,7 @@ module.exports.getRanking = async () => {
 
 module.exports.getRecognitions = async () => {
   return await Recognition.find({})
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: 'desc' })
     .populate({ path: 'recognizedUserId', select: 'name avatar' })
     .limit(12);
 };

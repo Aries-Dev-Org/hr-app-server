@@ -662,7 +662,7 @@ module.exports.getOpenPendings = async () => {
         { path: 'bosses', select: 'fullname email evaluationRelationships' },
         { path: 'employees', select: 'fullname email evaluationRelationships' },
       ])
-      .sort({ name: 1 })
+      .sort({ name: 'asc' })
       .lean(),
     Goal.find({
       processed: false,
@@ -838,7 +838,7 @@ module.exports.getClosePendings = async (evaluationId) => {
             populate: [{ path: 'bosses', select: 'fullname email' }],
           },
         ])
-        .sort({ name: 1 })
+        .sort({ name: 'asc' })
         .lean(),
       UserEvaluation.find({
         evaluation: evaluationId,

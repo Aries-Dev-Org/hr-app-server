@@ -2,7 +2,7 @@ const { emitSocketEvent } = require('../helpers/emitSocketEvent');
 const Novelty = require('../models/Novelty');
 
 module.exports.getNovelties = async () => {
-  return await Novelty.find({}).sort({ createdAt: -1 });
+  return await Novelty.find({}).sort({ createdAt: 'desc' });
 };
 
 module.exports.createNovelty = async (req, data) => {
@@ -11,5 +11,5 @@ module.exports.createNovelty = async (req, data) => {
   if (req) {
     emitSocketEvent(req, 'comunication-created');
   }
-  return await Novelty.find({}).sort({ createdAt: -1 });
+  return await Novelty.find({}).sort({ createdAt: 'desc' });
 };

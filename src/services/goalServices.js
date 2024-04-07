@@ -38,7 +38,7 @@ module.exports.getGoals = async (user, goalsDate = null) => {
         path: 'toUsersIds',
         select: 'name lastname avatar',
       })
-      .sort({ createdAt: '-1' });
+      .sort({ createdAt: 'desc' });
   } else {
     // Si el usuario es empleado o superadmin
     // busco los objetivos que me asignaron (empleado) o que asigné (superadmin)
@@ -62,7 +62,7 @@ module.exports.getGoals = async (user, goalsDate = null) => {
         path: 'toUsersIds',
         select: 'name lastname avatar',
       })
-      .sort({ createdAt: '-1' });
+      .sort({ createdAt: 'desc' });
   }
 
   const previousEvaluations = await Evaluation.find({ done: true }).select(

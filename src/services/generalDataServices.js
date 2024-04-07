@@ -42,7 +42,7 @@ module.exports.getGeneralData = async (userId) => {
         path: 'parentArea',
         select: 'name bosses',
       })
-      .sort({ name: 1 }),
+      .sort({ name: 'asc' }),
     User.findById(userId)
       .populate({
         path: 'area',
@@ -59,10 +59,10 @@ module.exports.getGeneralData = async (userId) => {
     User.find({ active: true, isNotEvaluable: false })
       .select('name lastname role area profiles avatar')
       .populate('area')
-      .sort({ name: '1' }),
+      .sort({ name: 'asc' }),
     UserProfile.find({}),
     Evaluation.findOne({ done: false }),
-    Competence.find({}).sort({ name: '1' }),
+    Competence.find({}).sort({ name: 'asc' }),
     Config.findOne({}),
     Company.findOne({}).populate('categories'),
     CompetencesTemplate.find({}).populate('competences'),

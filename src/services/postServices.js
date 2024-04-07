@@ -19,7 +19,7 @@ module.exports.getPosts = async (user, limit = 10) => {
     .populate('createUserId')
     .populate('channel')
     .limit(limit)
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: 'desc' });
 };
 
 module.exports.getChannels = async () => {
@@ -28,7 +28,7 @@ module.exports.getChannels = async () => {
       path: 'subscribers',
       select: '_id fullname avatar generalInterest',
     })
-    .sort({ name: 1 });
+    .sort({ name: 'asc' });
 };
 
 module.exports.updateChannelSubscribers = async (

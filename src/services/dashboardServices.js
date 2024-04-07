@@ -9,9 +9,9 @@ const { getOpenPendings, getClosePendings } = require('./evaluationServices');
 module.exports.getDashboardData = async (req) => {
   const [novelties, reminders, congratulations, categoriesRanking] =
     await Promise.all([
-      Novelty.find().sort({ createdAt: -1 }),
-      Reminder.find().sort({ date: 1 }),
-      Congratulation.find().sort({ createdAt: -1 }),
+      Novelty.find().sort({ createdAt: 'desc' }),
+      Reminder.find().sort({ date: 'asc' }),
+      Congratulation.find().sort({ createdAt: 'desc' }),
       User.find({
         'score.totalScore': { $gt: 0 },
         active: true,
@@ -19,7 +19,7 @@ module.exports.getDashboardData = async (req) => {
       })
         .select('name lastname score avatar')
         .populate('area')
-        .sort({ 'score.totalScore': -1 })
+        .sort({ 'score.totalScore': 'desc' })
         .limit(10),
     ]);
 

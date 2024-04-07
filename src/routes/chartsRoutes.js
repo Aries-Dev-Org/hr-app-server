@@ -148,7 +148,7 @@ chartsRoutes.get('/:stats', verifyToken, async (req, res) => {
       _id: { $in: evaluationsIdsArray },
     })
       .select('name createdAt')
-      .sort({ createdAt: 1 });
+      .sort({ createdAt: 'asc' });
 
     const data = [];
 

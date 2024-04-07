@@ -43,7 +43,7 @@ module.exports.searchUsers = async (req) => {
       active: true,
       isNotEvaluable: false,
     })
-      .sort({ name: 1 })
+      .sort({ name: 'asc' })
       .populate('area profiles')
       .skip(limit * (page - 1))
       .limit(limit);
@@ -89,7 +89,7 @@ module.exports.searchUsers = async (req) => {
   const count = await User.find(conditions).count();
 
   const usersDb = await User.find(conditions)
-    .sort({ name: 1 })
+    .sort({ name: 'asc' })
     .populate('area profiles')
     .skip(limit * (page - 1))
     .limit(limit);
@@ -106,7 +106,7 @@ module.exports.getAllUsers = async () => {
     )
     .populate({ path: 'area', select: 'name' })
     .populate({ path: 'profiles', select: 'label' })
-    .sort({ name: '1' })
+    .sort({ name: 'asc' })
     .lean();
 
   return users;

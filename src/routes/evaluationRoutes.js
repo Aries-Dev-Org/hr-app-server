@@ -123,7 +123,7 @@ evaluationRoutes.post('/user', async (req, res) => {
       path: 'parentArea',
       select: 'name bosses',
     })
-    .sort({ name: 1 });
+    .sort({ name: 'asc' });
 
   res.status(200).send({
     message: 'Evaluaciones creadas correctamente.',

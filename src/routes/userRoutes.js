@@ -198,7 +198,7 @@ userRoutes.post(
         await User.insertMany(users);
         const usersDB = await User.find({ isSuperAdmin: false })
           .populate('area')
-          .sort({ fullname: 1 });
+          .sort({ fullname: 'asc' });
         res.status(201).send({
           payload: { users: usersDB },
           message: `Usuarios cargados correctamente (${users.length})`,
@@ -438,7 +438,7 @@ userRoutes.put('/:userId', verifyToken, async (req, res) => {
 
     const users = await User.find({ isSuperAdmin: false })
       .populate('area')
-      .sort({ fullname: 1 });
+      .sort({ fullname: 'asc' });
 
     res.status(201).send({
       payload: { users },

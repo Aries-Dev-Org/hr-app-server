@@ -1,18 +1,16 @@
-const Congratulation = require('../models/Congratulation');
-const Novelty = require('../models/Novelty');
-const Reminder = require('../models/Reminder');
-const Evaluation = require('../models/Evaluation');
-const User = require('../models/User');
 const { getAllStatus } = require('./companyServices');
 const { getOpenPendings, getClosePendings } = require('./evaluationServices');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.getDashboardData = async (req) => {
+  const models = getCurrentConnectionModels();
+
   const [novelties, reminders, congratulations, categoriesRanking] =
     await Promise.all([
-      Novelty.find().sort({ createdAt: 'desc' }),
-      Reminder.find().sort({ date: 'asc' }),
-      Congratulation.find().sort({ createdAt: 'desc' }),
-      User.find({
+      models.Novelty.find().sort({ createdAt: 'desc' }),
+      models.Reminder.find().sort({ date: 'asc' }),
+      models.Congratulation.find().sort({ createdAt: 'desc' }),
+      models.User.find({
         'score.totalScore': { $gt: 0 },
         active: true,
         isNotEvaluable: false,
@@ -28,8 +26,8 @@ module.exports.getDashboardData = async (req) => {
   // Si es super admin, agregamos data a la respuesta
   if (req.user.isSuperAdmin) {
     const [evaluation, status] = await Promise.all([
-      await Evaluation.findOne({ done: false }),
-      getAllStatus(),
+      await models.Evaluation.findOne({ done: false }),
+      getAllStatus(models),
     ]);
 
     response.status = status;
@@ -37,7 +35,7 @@ module.exports.getDashboardData = async (req) => {
     // Si no hay evaluacion en curso, buscamos los faltantes para abrirla, y armamos una respuesta.
     // Si hay una en curso, hacemos lo mismo pero con los faltantes para cerrarla
     if (evaluation) {
-      const closePendings = await getClosePendings();
+      const closePendings = await getClosePendings(evaluation._id, models);
       const getPending = (key) =>
         closePendings?.areas?.some((area) => area[key]);
 
@@ -70,7 +68,7 @@ module.exports.getDashboardData = async (req) => {
 
       response.closePendingTasks = closePendingTasks;
     } else {
-      const openPendings = await getOpenPendings();
+      const openPendings = await getOpenPendings(models);
 
       const getPending = (key) =>
         openPendings?.areas?.some((area) => area[key]);

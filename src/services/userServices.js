@@ -8,6 +8,7 @@ const {
   getCurrentGoalsWithFeedbacksQtyByUser,
   getCurrentGoalsWithTodosQtyByUser,
 } = require('../Repository/goal');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.unlinkUserFromAffectedUsers = async (userId) => {
   // Buscamos los usuarios en donde el usuario inactivo, aparece como affected User
@@ -100,6 +101,7 @@ module.exports.searchUsers = async (req) => {
 };
 
 module.exports.getAllUsers = async () => {
+  const { User } = getCurrentConnectionModels();
   const users = await User.find({ isNotEvaluable: false })
     .select(
       'fullname avatar score email profiles role entry active isAdmin name lastname roleLabel range inactiveMotive'
@@ -183,13 +185,13 @@ module.exports.deactivateUser = async (userId, areaId, role, motive) => {
   });
 };
 
-module.exports.getUserGoalsData = async (userId) => {
+module.exports.getUserGoalsData = async (userId, models) => {
   const [goalsQty, goalDone, goalWithFeedback, goalsWithTodos] =
     await Promise.all([
-      getCurrentGoalsQtyByUser(userId),
-      getCurrentGoalsDoneQtyByUser(userId),
-      getCurrentGoalsWithFeedbacksQtyByUser(userId),
-      getCurrentGoalsWithTodosQtyByUser(userId),
+      getCurrentGoalsQtyByUser(userId, models),
+      getCurrentGoalsDoneQtyByUser(userId, models),
+      getCurrentGoalsWithFeedbacksQtyByUser(userId, models),
+      getCurrentGoalsWithTodosQtyByUser(userId, models),
     ]);
 
   const userGoalStatus = [

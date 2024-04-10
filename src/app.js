@@ -101,7 +101,7 @@ app.use('/api/charts', verifyToken, resolveTenant, chartsRoutes);
 app.use('/api/excel', /* verifyToken, */ excelRoutes);
 
 // Development Query Routes
-app.use('/api/query', verifyToken, queryRoutes);
+app.use('/api/query', verifyToken, resolveTenant, queryRoutes);
 
 // Errors Handler Middleware
 app.use(expressErrorsHandler);

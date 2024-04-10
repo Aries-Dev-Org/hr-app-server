@@ -1,13 +1,7 @@
-const { getCurrentConnectionModels } = require('../db/connectionManager');
-
-module.exports.getDemandsQty = async () => {
-  const { Demand } = getCurrentConnectionModels();
-
-  return await Demand.find({}).count();
+module.exports.getDemandsQty = async (models) => {
+  return await models.Demand.find({}).count();
 };
 
-module.exports.getCompletedDemandsQty = async () => {
-  const { Demand } = getCurrentConnectionModels();
-
-  return await Demand.find({ state: 'done' }).count();
+module.exports.getCompletedDemandsQty = async (models) => {
+  return await models.Demand.find({ state: 'done' }).count();
 };

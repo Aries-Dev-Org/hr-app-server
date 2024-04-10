@@ -54,7 +54,7 @@ module.exports.updateCompany = async (data) => {
   return company;
 };
 
-module.exports.getAllStatus = async () => {
+module.exports.getAllStatus = async (models) => {
   const [
     allUsers,
     activeUsers,
@@ -73,22 +73,22 @@ module.exports.getAllStatus = async () => {
     demandsQty,
     completedDemandsQty,
   ] = await Promise.all([
-    getUsersQty(),
-    getActiveUsersQty(),
-    getCurrentGoalsQty(),
-    getCurrentGoalsWithFeedbacksQty(),
-    getCurrentGoalsWithTodosQty(),
-    getRecognitionsQty(),
-    getCurrentActionPlansQty(),
-    getCurrentActionPlansSeenQty(),
-    getGoldCategoryUsersQty(),
-    getSilverCategoryUsersQty(),
-    getBronzeCategoryUsersQty(),
-    getWithoutCategoryUsersQty(),
-    getSearchesQty(),
-    getSearchesPostulations(),
-    getDemandsQty(),
-    getCompletedDemandsQty(),
+    getUsersQty(models),
+    getActiveUsersQty(models),
+    getCurrentGoalsQty(models),
+    getCurrentGoalsWithFeedbacksQty(models),
+    getCurrentGoalsWithTodosQty(models),
+    getRecognitionsQty(models),
+    getCurrentActionPlansQty(models),
+    getCurrentActionPlansSeenQty(models),
+    getGoldCategoryUsersQty(models),
+    getSilverCategoryUsersQty(models),
+    getBronzeCategoryUsersQty(models),
+    getWithoutCategoryUsersQty(models),
+    getSearchesQty(models),
+    getSearchesPostulations(models),
+    getDemandsQty(models),
+    getCompletedDemandsQty(models),
   ]);
 
   const status = [

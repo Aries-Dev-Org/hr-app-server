@@ -1,76 +1,62 @@
-const { getCurrentConnectionModels } = require('../db/connectionManager');
-
-module.exports.getUsersQty = async () => {
-  const { User } = getCurrentConnectionModels();
-
-  return await User.find({ isSuperAdmin: false }).count();
+module.exports.getUsersQty = async (models) => {
+  return await models.User.find({ isSuperAdmin: false }).count();
 };
 
-module.exports.getActiveUsersQty = async () => {
-  const { User } = getCurrentConnectionModels();
-
-  return await User.find({ isSuperAdmin: false, active: true }).count();
+module.exports.getActiveUsersQty = async (models) => {
+  return await models.User.find({ isSuperAdmin: false, active: true }).count();
 };
 
-module.exports.getCurrentActionPlansQty = async () => {
-  const { User } = getCurrentConnectionModels();
-
-  return await User.find({
+module.exports.getCurrentActionPlansQty = async (models) => {
+  return await models.User.find({
     isSuperAdmin: false,
     'actionPlan.text': { $ne: '' },
   }).count();
 };
 
-module.exports.getCurrentActionPlansSeenQty = async () => {
-  const { User } = getCurrentConnectionModels();
-
-  return await User.find({
+module.exports.getCurrentActionPlansSeenQty = async (models) => {
+  return await models.User.find({
     isSuperAdmin: false,
     'actionPlan.text': { $ne: '' },
     'actionPlan.seen': true,
   }).count();
 };
 
-module.exports.getGoldCategoryUsersQty = async () => {
-  const { Category, User } = getCurrentConnectionModels();
-
-  const { minPoints, maxPoints } = await Category.findOne({
+module.exports.getGoldCategoryUsersQty = async (models) => {
+  const { minPoints, maxPoints } = await models.Category.findOne({
     value: 'Gold',
   });
-  return await User.find({
+  return await models.User.find({
     active: true,
     isSuperAdmin: false,
     'score.totalScore': { $gte: minPoints, $lte: maxPoints },
   }).count();
 };
 
-module.exports.getSilverCategoryUsersQty = async () => {
-  const { Category, User } = getCurrentConnectionModels();
-
-  const { minPoints, maxPoints } = await Category.findOne({ value: 'Silver' });
-  return await User.find({
+module.exports.getSilverCategoryUsersQty = async (models) => {
+  const { minPoints, maxPoints } = await models.Category.findOne({
+    value: 'Silver',
+  });
+  return await models.User.find({
     active: true,
     isSuperAdmin: false,
     'score.totalScore': { $gte: minPoints, $lte: maxPoints },
   }).count();
 };
 
-module.exports.getBronzeCategoryUsersQty = async () => {
-  const { Category, User } = getCurrentConnectionModels();
-
-  const { minPoints, maxPoints } = await Category.findOne({ value: 'Bronze' });
-  return await User.find({
+module.exports.getBronzeCategoryUsersQty = async (models) => {
+  const { minPoints, maxPoints } = await models.Category.findOne({
+    value: 'Bronze',
+  });
+  return await models.User.find({
     active: true,
     isSuperAdmin: false,
     'score.totalScore': { $gte: minPoints, $lte: maxPoints },
   }).count();
 };
 
-module.exports.getWithoutCategoryUsersQty = async () => {
-  const { Category, User } = getCurrentConnectionModels();
-
-  const { minPoints } = await Category.findOne({ value: 'Bronze' });
-  return await User.find({
+module.exports.getWithoutCategoryUsersQty = async (models) => {
+  const { minPoints } = await models.Category.findOne({ value: 'Bronze' });
+  return await models.User.find({
     isSuperAdmin: false,
     active: true,
     'score.totalScore': { $lt: minPoints },

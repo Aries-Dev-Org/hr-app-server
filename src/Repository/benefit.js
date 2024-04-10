@@ -1,6 +1,8 @@
-const Benefit = require('../models/Benefit');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.getBenefitsDataForReport = async () => {
+  const { Benefit } = getCurrentConnectionModels();
+
   return await Benefit.find({ isActive: true })
     .populate({
       path: 'category',

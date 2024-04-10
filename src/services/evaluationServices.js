@@ -654,17 +654,17 @@ module.exports.updateScores = async (
   return 'Scores Updated';
 };
 
-module.exports.getOpenPendings = async () => {
+module.exports.getOpenPendings = async (models) => {
   // Obtenemos de una sola vez las areas gerenciales y sus areas dependientes y los objetivos en curso
   const [areas, goals] = await Promise.all([
-    Area.find()
+    models.Area.find()
       .populate([
         { path: 'bosses', select: 'fullname email evaluationRelationships' },
         { path: 'employees', select: 'fullname email evaluationRelationships' },
       ])
       .sort({ name: 'asc' })
       .lean(),
-    Goal.find({
+    models.Goal.find({
       processed: false,
       group: false,
     })
@@ -822,14 +822,14 @@ module.exports.getOpenPendings = async () => {
   return result;
 };
 
-module.exports.getClosePendings = async (evaluationId) => {
+module.exports.getClosePendings = async (evaluationId, models) => {
   // Obtenemos de una sola vez la evaluación global, las areas gerenciales y sus areas dependientes,
   // las evaluaciones de usuarios relacionadas a la actual evaluacion global (sin responder)
   // los objetivos actuales (no procesados y en proceso) y la cant. de usuarios sin asistencia informada
   const [evaluation, areas, userEvaluations, goals, pendingAssistance] =
     await Promise.all([
-      Evaluation.findById(evaluationId),
-      Area.find()
+      models.Evaluation.findById(evaluationId),
+      models.Area.find()
         .populate([
           { path: 'bosses', select: 'fullname email' },
           { path: 'employees', select: 'fullname email' },
@@ -840,18 +840,18 @@ module.exports.getClosePendings = async (evaluationId) => {
         ])
         .sort({ name: 'asc' })
         .lean(),
-      UserEvaluation.find({
+      models.UserEvaluation.find({
         evaluation: evaluationId,
       })
         .select('user done')
         .lean(),
-      Goal.find({
+      models.Goal.find({
         processed: false,
         state: 'wip',
       })
         .select('toUserId state toUsersIds')
         .lean(),
-      User.find({
+      models.User.find({
         'score.assistance': 0,
         active: true,
         isNotEvaluable: false,

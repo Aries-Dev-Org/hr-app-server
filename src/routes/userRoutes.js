@@ -2,7 +2,6 @@
 const userRoutes = require('express').Router();
 // const fs = require('fs');
 // const path = require('path');
-const User = require('../models/User');
 const { verifyToken, verifyAdmin } = require('../middlewares/authMiddleware');
 const encryptPassword = require('../helpers/encryptPassword');
 const logger = require('../services/logger');
@@ -19,26 +18,20 @@ const {
 } = require('../services/userServices');
 const { updateCoinsByBenefit } = require('../services/updateScores');
 const uploadToSpaces = require('../middlewares/multerv2');
-const Area = require('../models/Area');
 const moment = require('moment');
 const { getTranslatedRole } = require('../helpers/enumRoles');
-const Benefit = require('../models/Benefit');
 const multer = require('multer');
 const readXlsxFile = require('read-excel-file/node');
 const { Configuration, OpenAIApi } = require('openai');
 const bcrypt = require('bcrypt');
-const Goal = require('../models/Goal');
-const {
-  getCurrentGoalsQtyByUser,
-  getCurrentGoalsDoneQtyByUser,
-  getCurrentGoalsWithFeedbacksQtyByUser,
-  getCurrentGoalsWithTodosQtyByUser,
-} = require('../Repository/goal');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 const upload = multer();
 
 // Actualiza los datos personales del usuario
 userRoutes.put('/personal-data', verifyToken, async (req, res) => {
+  const { User } = getCurrentConnectionModels();
+
   try {
     const user = await User.findByIdAndUpdate(
       req.user._id,
@@ -76,6 +69,8 @@ userRoutes.put(
   '/action-plan/:toUserId/:origin',
   verifyToken,
   async (req, res) => {
+    const { User } = getCurrentConnectionModels();
+
     const { actionPlan } = req.body;
     const { toUserId, origin } = req.params;
 
@@ -121,6 +116,7 @@ userRoutes.get('/', verifyToken, async (_, res) => {
 
 // Registrar usuario
 userRoutes.post('/register', verifyToken, verifyAdmin, async (req, res) => {
+  const { User } = getCurrentConnectionModels();
   const { password } = req.body;
 
   const userExists = await User.findOne({ email: req.body.email }).sort({
@@ -165,6 +161,7 @@ userRoutes.post(
   verifyAdmin,
   upload.single('file'),
   async (req, res) => {
+    const { User } = getCurrentConnectionModels();
     const { file } = req;
     if (
       file.mimetype ===
@@ -220,6 +217,7 @@ userRoutes.post(
 
 // Resetea el password
 userRoutes.post('/updatePassword', async (req, res) => {
+  const { User } = getCurrentConnectionModels();
   const { password, userId } = req.body;
 
   try {
@@ -241,9 +239,10 @@ userRoutes.get('/search', verifyToken, async (req, res) => {
 
 // Obtener usuario por id
 userRoutes.get('/:id', verifyToken, async (req, res) => {
+  const models = getCurrentConnectionModels();
   try {
     const userId = req.params.id;
-    const userData = await User.findById(userId)
+    const userData = await models.User.findById(userId)
       .select('-password')
       .populate({
         path: 'area',
@@ -268,12 +267,12 @@ userRoutes.get('/:id', verifyToken, async (req, res) => {
     let managementArea;
 
     if (userData?.area?.parentArea) {
-      managementArea = await Area.findById(userData.area.parentArea);
+      managementArea = await models.Area.findById(userData.area.parentArea);
     } else {
       managementArea = null;
     }
 
-    const userGoalStatus = await getUserGoalsData(userId);
+    const userGoalStatus = await getUserGoalsData(userId, models);
 
     res
       .status(200)
@@ -286,6 +285,7 @@ userRoutes.get('/:id', verifyToken, async (req, res) => {
 
 // Cambiar contraseña
 userRoutes.put('/updatePassword', verifyToken, async (req, res) => {
+  const { User } = getCurrentConnectionModels();
   const { oldPassword, newPassword } = req.body;
 
   const userDb = await User.findById(req.user._id);
@@ -315,6 +315,7 @@ userRoutes.put(
   verifyToken,
   uploadToSpaces(`${process.env.NODE_ENV}/${process.env.APPLICATION}/avatars`),
   async (req, res) => {
+    const { User } = getCurrentConnectionModels();
     const { Location } = req.file;
 
     await User.findByIdAndUpdate(req.user._id, {
@@ -330,6 +331,7 @@ userRoutes.put(
 
 //Actualiza las monedas de un usuario en base a demands, evaluaciones, capacitaciones, reconocimientos...
 userRoutes.put('/coins/:reason/:reasonId', verifyToken, async (req, res) => {
+  const { User, Benefit } = getCurrentConnectionModels();
   // if (req.params.reason === 'demand') {
   //   await updateCoinsByDemand(req);
   //   const user = await User.findById(req.user._id);
@@ -389,6 +391,7 @@ userRoutes.put('/deactivate', verifyToken, async (req, res) => {
 
 // Actualiza información general de un usuario
 userRoutes.put('/:userId', verifyToken, async (req, res) => {
+  const { User, Area } = getCurrentConnectionModels();
   const { userId } = req.params;
 
   try {
@@ -450,7 +453,9 @@ userRoutes.put('/:userId', verifyToken, async (req, res) => {
   }
 });
 
-userRoutes.get('/game/random', async (req, res) => {
+userRoutes.get('/game/random', async (_, res) => {
+  const { User } = getCurrentConnectionModels();
+
   const users = await User.find({}).select('avatar fullname').limit(5);
   res.status(200).send(users);
 });

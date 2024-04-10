@@ -23,16 +23,19 @@ const {
   getBronzeCategoryUsersQty,
   getWithoutCategoryUsersQty,
 } = require('../Repository/user');
-const Category = require('../models/Category');
-const Company = require('../models/Company');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.createCompany = async (data) => {
+  const { Company } = getCurrentConnectionModels();
+
   const newCompany = new Company(data);
   const company = await newCompany.save();
   return company;
 };
 
 module.exports.updateCompany = async (data) => {
+  const { Category, Company } = getCurrentConnectionModels();
+
   const { _id, categories } = data;
 
   for await (const [_, category] of categories.entries()) {

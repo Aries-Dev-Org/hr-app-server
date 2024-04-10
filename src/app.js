@@ -37,7 +37,10 @@ const congratulationRoutes = require('./routes/congratulationRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const excelRoutes = require('./routes/excelRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
-const { setAdminDb } = require('./middlewares/connectionResolver.js');
+const {
+  setAdminDb,
+  resolveTenant,
+} = require('./middlewares/connectionResolver.js');
 
 /* const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -61,32 +64,40 @@ app.use(mongoSanitize());
 app.use(express.json({ limit: '500mb' }));
 app.use(morgan('combined'));
 
+// Ping
+app.get('/api/ping', (_, res) => res.send('pong'));
+
 // Public routes
 app.use(express.static(path.join(__dirname, '../public')));
-app.use('/api/user-public', userPublicRoutes);
+app.use('/api/user-public', resolveTenant, userPublicRoutes);
 
 // Private routes
 app.use('/api/admin', verifyToken, setAdminDb, adminRoutes);
-app.use('/api/area', verifyToken, areaRoutes);
-app.use('/api/benefit', verifyToken, benefitRoutes);
-app.use('/api/company', verifyToken, companyRoutes);
-app.use('/api/dashboard', verifyToken, dashboardRoutes);
-app.use('/api/demand', verifyToken, demandRoutes);
-app.use('/api/evaluation', verifyToken, evaluationRoutes);
-app.use('/api/generalData', verifyToken, generalDataRoutes);
-app.use('/api/goal', verifyToken, goalRoutes);
-app.use('/api/notification', verifyToken, notificationRoutes);
-app.use('/api/novelty', verifyToken, noveltyRoutes);
-app.use('/api/reminder', verifyToken, reminderRoutes);
-app.use('/api/congratulation', verifyToken, congratulationRoutes);
-app.use('/api/post', verifyToken, postRoutes);
-app.use('/api/recognition', verifyToken, recognitionRoutes);
-app.use('/api/search', verifyToken, searchRoutes);
-app.use('/api/survey', verifyToken, surveyRoutes);
-app.use('/api/user', verifyToken, userRoutes);
-app.use('/api/userProfile', verifyToken, userProfileRoutes);
-app.use('/api/competence', verifyToken, competenceRoutes);
-app.use('/api/charts', verifyToken, chartsRoutes);
+app.use('/api/area', verifyToken, resolveTenant, areaRoutes);
+app.use('/api/benefit', verifyToken, resolveTenant, benefitRoutes);
+app.use('/api/company', verifyToken, resolveTenant, companyRoutes);
+app.use('/api/dashboard', verifyToken, resolveTenant, dashboardRoutes);
+app.use('/api/demand', verifyToken, resolveTenant, demandRoutes);
+app.use('/api/evaluation', verifyToken, resolveTenant, evaluationRoutes);
+app.use('/api/generalData', verifyToken, resolveTenant, generalDataRoutes);
+app.use('/api/goal', verifyToken, resolveTenant, goalRoutes);
+app.use('/api/notification', verifyToken, resolveTenant, notificationRoutes);
+app.use('/api/novelty', verifyToken, resolveTenant, noveltyRoutes);
+app.use('/api/reminder', verifyToken, resolveTenant, reminderRoutes);
+app.use(
+  '/api/congratulation',
+  verifyToken,
+  resolveTenant,
+  congratulationRoutes
+);
+app.use('/api/post', verifyToken, resolveTenant, postRoutes);
+app.use('/api/recognition', verifyToken, resolveTenant, recognitionRoutes);
+app.use('/api/search', verifyToken, resolveTenant, searchRoutes);
+app.use('/api/survey', verifyToken, resolveTenant, surveyRoutes);
+app.use('/api/user', verifyToken, resolveTenant, userRoutes);
+app.use('/api/userProfile', verifyToken, resolveTenant, userProfileRoutes);
+app.use('/api/competence', verifyToken, resolveTenant, competenceRoutes);
+app.use('/api/charts', verifyToken, resolveTenant, chartsRoutes);
 app.use('/api/excel', /* verifyToken, */ excelRoutes);
 
 // Development Query Routes

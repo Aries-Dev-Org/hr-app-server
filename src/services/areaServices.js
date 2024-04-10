@@ -1,9 +1,10 @@
-const Area = require('../models/Area');
-const User = require('../models/User');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 const { unlinkUserFromAffectedUsers } = require('./userServices');
 
 //Obtener todas las areas
 module.exports.getAreas = async () => {
+  const { Area } = getCurrentConnectionModels();
+
   const areas = await Area.find({ management: true })
     .select('name bosses dependentAreas')
     .populate({
@@ -30,6 +31,8 @@ module.exports.getAreas = async () => {
 
 //Obtener un area
 module.exports.getAreaById = async (areaId) => {
+  const { Area } = getCurrentConnectionModels();
+
   const area = await Area.findById(areaId)
     .select('name bosses employees parentArea dependentAreas')
     .populate({
@@ -63,6 +66,8 @@ module.exports.getAreaById = async (areaId) => {
 
 //Obtener varias areas por id
 module.exports.getAreasByIds = async (areasIds) => {
+  const { Area } = getCurrentConnectionModels();
+
   const areas = await Area.find({ _id: { $in: areasIds } })
     .select('name bosses employees')
     .populate({
@@ -91,7 +96,9 @@ module.exports.getAreaSurveyAverage = async (area) => {
 
 //Obtener average de un conjunto de areas
 module.exports.getAreasSurveyAverage = async (areasIds) => {
+  const { Area } = getCurrentConnectionModels();
   const surveysResponses = [];
+
   const areas = await Area.find({ _id: { $in: areasIds } })
     .select('name bosses employees')
     .populate({
@@ -116,6 +123,8 @@ module.exports.getAreasSurveyAverage = async (areasIds) => {
 };
 
 module.exports.getAreaByIdAndRelatedUsers = async (areaId) => {
+  const { Area } = getCurrentConnectionModels();
+
   const selectedArea = await Area.findById(areaId)
     .populate({
       path: 'bosses',
@@ -162,6 +171,8 @@ module.exports.getAreaByIdAndRelatedUsers = async (areaId) => {
 
 //Filtrar areas
 module.exports.getAreaByFilter = async (value) => {
+  const { Area } = getCurrentConnectionModels();
+
   const area = await Area.find({
     $or: [{ name: { $regex: value, $options: 'i' } }],
   });
@@ -171,6 +182,8 @@ module.exports.getAreaByFilter = async (value) => {
 
 //Crear un area
 module.exports.createArea = async (req) => {
+  const { Area } = getCurrentConnectionModels();
+
   const newArea = new Area({ ...req.body, createUserId: req.user._id });
   await newArea.save();
 
@@ -193,6 +206,8 @@ module.exports.createArea = async (req) => {
 
 //Editar un area
 module.exports.updateArea = async (req) => {
+  const { Area } = getCurrentConnectionModels();
+
   const areaDB = await Area.findById(req.body.id);
 
   const hasParentArea = areaDB.parentArea;
@@ -246,6 +261,8 @@ module.exports.updateArea = async (req) => {
 
 //Eliminar un area
 module.exports.deleteArea = async (req) => {
+  const { Area } = getCurrentConnectionModels();
+
   const areaDB = await Area.findById(req.params.id);
 
   if (
@@ -276,18 +293,24 @@ module.exports.deleteArea = async (req) => {
 };
 
 const removeAreaFromDependentAreas = async (parentAreaId, areaId) => {
+  const { Area } = getCurrentConnectionModels();
+
   await Area.findByIdAndUpdate(parentAreaId, {
     $pull: { dependentAreas: areaId },
   });
 };
 
 const addAreaAsDependent = async (parentAreaId, areaId) => {
+  const { Area } = getCurrentConnectionModels();
+
   await Area.findByIdAndUpdate(parentAreaId, {
     $addToSet: { dependentAreas: areaId },
   });
 };
 
 const resetUserEvaluationRelationships = async (userId) => {
+  const { User } = getCurrentConnectionModels();
+
   await User.findByIdAndUpdate(userId, {
     evaluationRelationships: { confirmed: false, affectedUsers: [] },
   });

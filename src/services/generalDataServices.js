@@ -1,17 +1,20 @@
 /* eslint-disable no-unused-vars */
-const { verifyCreationEnabled } = require('./evaluationServices');
-const Area = require('../models/Area');
-const Category = require('../models/Category');
-const Company = require('../models/Company');
-const Competence = require('../models/Competence');
-const Config = require('../models/Config');
-const Evaluation = require('../models/Evaluation');
-const User = require('../models/User');
-const UserProfile = require('../models/UserProfile');
-const CompetencesTemplate = require('../models/CompetencesTemplate');
-const UserEvaluation = require('../models/UserEvaluation');
+
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.getGeneralData = async (userId) => {
+  const {
+    Area,
+    User,
+    UserProfile,
+    Evaluation,
+    Competence,
+    Config,
+    Company,
+    CompetencesTemplate,
+    UserEvaluation,
+  } = getCurrentConnectionModels();
+
   const applicationName = process.env.APPLICATION_NAME;
   // Usamos Promise.all para hacer todas las consultas en paralelo
   const [

@@ -52,27 +52,27 @@ const initTenantDbConnection = (DB_URL) => {
     });
 
     // Schemas registration
-    db.model('Area', require('../models/Area'));
-    db.model('Benefit', require('../models/Benefit'));
-    db.model('Category', require('../models/Category'));
-    db.model('Channel', require('../models/Channel'));
-    db.model('Company', require('../models/Company'));
-    db.model('Competence', require('../models/Competence'));
-    db.model('CompetencesTemplate', require('../models/CompetencesTemplate'));
-    db.model('Config', require('../models/Config'));
-    db.model('Congratulation', require('../models/Congratulation'));
-    db.model('Demand', require('../models/Demand'));
-    db.model('Evaluation', require('../models/Evaluation'));
-    db.model('Goal', require('../models/Goal'));
-    db.model('Notification', require('../models/Notification'));
-    db.model('Novelty', require('../models/Novelty'));
-    db.model('Post', require('../models/Post'));
-    db.model('Recognition', require('../models/Recognition'));
-    db.model('Reminder', require('../models/Reminder'));
-    db.model('Search', require('../models/Search'));
-    db.model('User', require('../models/User'));
-    db.model('UserEvaluation', require('../models/UserEvaluation'));
-    db.model('UserProfile', require('../models/UserProfile'));
+    db.model('Area', require('../schemas/Area'));
+    db.model('Benefit', require('../schemas/Benefit'));
+    db.model('Category', require('../schemas/Category'));
+    db.model('Channel', require('../schemas/Channel'));
+    db.model('Company', require('../schemas/Company'));
+    db.model('Competence', require('../schemas/Competence'));
+    db.model('CompetencesTemplate', require('../schemas/CompetencesTemplate'));
+    db.model('Config', require('../schemas/Config'));
+    db.model('Congratulation', require('../schemas/Congratulation'));
+    db.model('Demand', require('../schemas/Demand'));
+    db.model('Evaluation', require('../schemas/Evaluation'));
+    db.model('Goal', require('../schemas/Goal'));
+    db.model('Notification', require('../schemas/Notification'));
+    db.model('Novelty', require('../schemas/Novelty'));
+    db.model('Post', require('../schemas/Post'));
+    db.model('Recognition', require('../schemas/Recognition'));
+    db.model('Reminder', require('../schemas/Reminder'));
+    db.model('Search', require('../schemas/Search'));
+    db.model('User', require('../schemas/User'));
+    db.model('UserEvaluation', require('../schemas/UserEvaluation'));
+    db.model('UserProfile', require('../schemas/UserProfile'));
 
     return db;
   } catch (error) {

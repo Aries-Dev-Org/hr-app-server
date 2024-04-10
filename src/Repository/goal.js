@@ -1,14 +1,20 @@
-const Goal = require('../models/Goal');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 module.exports.getCurrentGoalsQty = async () => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({ processed: false }).count();
 };
 
 module.exports.getCurrentGoalsQtyByUser = async (userId) => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({ toUserId: userId, processed: false }).count();
 };
 
 module.exports.getCurrentGoalsDoneQtyByUser = async (userId) => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({
     toUserId: userId,
     processed: false,
@@ -17,6 +23,8 @@ module.exports.getCurrentGoalsDoneQtyByUser = async (userId) => {
 };
 
 module.exports.getCurrentGoalsWithFeedbacksQty = async () => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({
     processed: false,
     $expr: { $gt: [{ $size: '$feedbacks' }, 0] },
@@ -24,6 +32,8 @@ module.exports.getCurrentGoalsWithFeedbacksQty = async () => {
 };
 
 module.exports.getCurrentGoalsWithFeedbacksQtyByUser = async (userId) => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({
     toUserId: userId,
     processed: false,
@@ -32,6 +42,8 @@ module.exports.getCurrentGoalsWithFeedbacksQtyByUser = async (userId) => {
 };
 
 module.exports.getCurrentGoalsWithTodosQty = async () => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({
     processed: false,
     $expr: { $gt: [{ $size: '$todos' }, 0] },
@@ -39,6 +51,8 @@ module.exports.getCurrentGoalsWithTodosQty = async () => {
 };
 
 module.exports.getCurrentGoalsWithTodosQtyByUser = async (userId) => {
+  const { Goal } = getCurrentConnectionModels();
+
   return await Goal.find({
     toUserId: userId,
     processed: false,

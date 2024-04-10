@@ -1,21 +1,27 @@
-const Benefit = require('../models/Benefit');
 const path = require('path');
 const fs = require('fs');
 const logger = require('./logger');
-const User = require('../models/User');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
-module.exports.getBenefits = async () =>
-  await Benefit.find({})
+module.exports.getBenefits = async () => {
+  const { Benefit } = getCurrentConnectionModels();
+
+  return await Benefit.find({})
     .populate('category')
     .populate({ path: 'applicants', select: 'fullname avatar' });
+};
 
 module.exports.createBenefit = async (data) => {
+  const { Benefit } = getCurrentConnectionModels();
+
   const newBenefit = new Benefit(data);
   await newBenefit.save();
   return await this.getBenefits();
 };
 
 module.exports.updateBenefit = async (data) => {
+  const { Benefit } = getCurrentConnectionModels();
+
   await Benefit.findByIdAndUpdate(data.id, data, { new: true }).populate(
     'category'
   );
@@ -23,6 +29,8 @@ module.exports.updateBenefit = async (data) => {
 };
 
 module.exports.updateBenefitApplicants = async (data) => {
+  const { Benefit } = getCurrentConnectionModels();
+
   await Benefit.findByIdAndUpdate(data.id, {
     $addToSet: { applicants: data.applicant },
   });
@@ -30,6 +38,8 @@ module.exports.updateBenefitApplicants = async (data) => {
 };
 
 module.exports.updateImage = async (req, res, err) => {
+  const { Benefit } = getCurrentConnectionModels();
+
   if (err) {
     if (err.message === 'File too large') {
       return res.status(400).send({ message: 'La imágen es muy pesada' });

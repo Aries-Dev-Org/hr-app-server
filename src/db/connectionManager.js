@@ -46,20 +46,15 @@ const connectAllDb = async () => {
  * Get the connection information (knex instance) for the given tenant's slug.
  */
 const getConnectionByTenant = (tenantName) => {
-  console.log(`Getting connection for ${tenantName}`);
   if (connectionMap) {
     return connectionMap[tenantName];
   }
 };
 
 const addTenantConnection = (tenantName) => {
-  const nameSpace = getNamespace('unique context');
-  const connection = nameSpace.get('connection');
-
   console.log(`Adding connection for ${tenantName}`);
   const TENANT_DB_URI = `${process.env.BASE_DB_URI}/${tenantName}`;
   connectionMap[tenantName] = initTenantDbConnection(TENANT_DB_URI);
-  return connection;
 };
 
 /**
@@ -88,10 +83,17 @@ const getConnection = () => {
   return connection;
 };
 
+const getCurrentConnectionModels = () => {
+  const connection = getConnection();
+  const { models } = connection;
+  return models;
+};
+
 module.exports = {
   connectAllDb,
   getAdminConnection,
   getConnection,
   getConnectionByTenant,
   addTenantConnection,
+  getCurrentConnectionModels,
 };

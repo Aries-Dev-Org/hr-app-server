@@ -1,16 +1,20 @@
 const userPublicRoutes = require('express').Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 const { verifyTokenLink } = require('../middlewares/authMiddleware');
 const logger = require('../services/logger');
 const mailer = require('../services/mailer');
 const { RESET_PASSWORD } = require('../constants/notificationTypes');
 const encryptPassword = require('../helpers/encryptPassword');
 const { isValidEmail } = require('../helpers/isValidEmail');
+const { getCurrentConnectionModels } = require('../db/connectionManager');
 
 // Loguear usuario
 userPublicRoutes.post('/signin', async (req, res) => {
+  const { User } = getCurrentConnectionModels();
+
+  const { tenant } = req;
+
   try {
     const userDb = await User.findOne({
       email: req.body.email,
@@ -46,12 +50,13 @@ userPublicRoutes.post('/signin', async (req, res) => {
       isAdmin,
       isSuperAdmin,
       area,
+      tenant,
     };
     const userInfo = { ...userDb._doc };
     const accessToken = jwt.sign(payload, process.env.JWT_SEED, {
       expiresIn: '1d',
     });
-    res.status(200).send({ token: accessToken, userInfo });
+    res.status(200).send({ token: accessToken, userInfo, tenant });
   } catch (err) {
     res.status(500).send({ message: 'Ha ocurrido un error en el servidor' });
     logger.error(`[userRoutes - signin - POST] - ${err.message}`);
@@ -60,6 +65,8 @@ userPublicRoutes.post('/signin', async (req, res) => {
 
 // Genera un link y lo envía por email para resetear la contraseña
 userPublicRoutes.post('/sendResetPasswordLink', async (req, res) => {
+  const { User } = getCurrentConnectionModels();
+
   try {
     const userDb = await User.findOne({ email: req.body.email });
 
@@ -95,6 +102,8 @@ userPublicRoutes.post('/sendResetPasswordLink', async (req, res) => {
 
 // Resetea el password
 userPublicRoutes.post('/resetPassword', verifyTokenLink, async (req, res) => {
+  const { User } = getCurrentConnectionModels();
+
   const { password } = req.body;
   const userId = req.userId;
 
@@ -111,6 +120,8 @@ userPublicRoutes.post('/resetPassword', verifyTokenLink, async (req, res) => {
 
 // Registrar un super admin
 userPublicRoutes.post('/registerSuperAdminUserRoute', async (req, res) => {
+  const { User } = getCurrentConnectionModels();
+
   const { password, specialKeyword } = req.body;
 
   if (!specialKeyword || specialKeyword !== process.env.JWT_SEED) {

@@ -37,7 +37,7 @@ module.exports.getDashboardData = async (req) => {
     // Si no hay evaluacion en curso, buscamos los faltantes para abrirla, y armamos una respuesta.
     // Si hay una en curso, hacemos lo mismo pero con los faltantes para cerrarla
     if (evaluation) {
-      const closePendings = await getClosePendings();
+      const closePendings = await getClosePendings(evaluation._id);
       const getPending = (key) =>
         closePendings?.areas?.some((area) => area[key]);
 

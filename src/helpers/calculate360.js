@@ -79,22 +79,24 @@ const getRelatedEvaluationsDetail = (relatedEvaluations, userId) => {
 
     answers = {};
     Object.keys(evaluation.answers).forEach((competence) => {
-      const behaviourPoints =
-        evaluation.answers[competence][userId].behaviour.points * 12.5;
-      const scorePoints =
-        evaluation.answers[competence][userId].score.points * 12.5;
-      const totalCompetencePoints = (behaviourPoints + scorePoints) / 2;
-      comments = evaluation.answers[competence][userId].comments;
-      answers[competence] = {
-        behaviourPoints,
-        scorePoints,
-        totalCompetencePoints,
-        bonusPoint:
-          String(evaluation.answers[competence].bonusPointValue) ===
-          String(userId),
-      };
+      if (evaluation.answers[competence][userId]) {
+        const behaviourPoints =
+          evaluation.answers[competence][userId].behaviour.points * 12.5;
+        const scorePoints =
+          evaluation.answers[competence][userId].score.points * 12.5;
+        const totalCompetencePoints = (behaviourPoints + scorePoints) / 2;
+        comments = evaluation.answers[competence][userId].comments;
+        answers[competence] = {
+          behaviourPoints,
+          scorePoints,
+          totalCompetencePoints,
+          bonusPoint:
+            String(evaluation.answers[competence].bonusPointValue) ===
+            String(userId),
+        };
 
-      totalEvaluationPoints += totalCompetencePoints;
+        totalEvaluationPoints += totalCompetencePoints;
+      }
     });
 
     dataToSHow.answers = answers;

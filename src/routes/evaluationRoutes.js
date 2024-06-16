@@ -5,6 +5,7 @@ const hbs = require('handlebars');
 const path = require('path');
 const fs = require('fs-extra');
 const Area = require('../models/Area');
+const logger = require('../services/logger');
 const {
   updateEvaluationResponse,
   getResponsesByEvaluationId,
@@ -253,6 +254,8 @@ evaluationRoutes.put('/close-evaluation-process', async (req, res) => {
 
 // Generar informe en pdf
 evaluationRoutes.post('/report', async (req, res) => {
+  console.log('Generating report...');
+
   const { score, userId } = req.body;
 
   // Primero se obtienen todos los datos necesarios para generar las variables del template
@@ -376,7 +379,10 @@ evaluationRoutes.post('/report', async (req, res) => {
       res.set('Content-Type', 'application/pdf');
       res.status(201).send(Buffer.from(pdfBuffer, 'binary'));
     } catch (err) {
-      //console.log(err);
+      console.log('Error generating report: ', err);
+      logger.error(
+        `[ '${req.originalUrl}' - ${req.method} ] - ${err.message || err}`
+      );
     }
   })();
 });
